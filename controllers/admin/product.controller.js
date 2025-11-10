@@ -60,7 +60,7 @@ module.exports.changeStatus = async (req, res) => {
   res.redirect("/admin/products");
 };
 
-////[PATCH] /admin/products/change-multi
+//[PATCH] /admin/products/change-multi
 module.exports.changeMulti = async (req, res) => {
   const type = req.body.type;
   const ids = req.body.ids.split(", ");
@@ -75,5 +75,14 @@ module.exports.changeMulti = async (req, res) => {
     default:
       break;
   }
+  res.redirect("/admin/products");
+};
+
+//[Delete] /admin/products/delete/:id
+module.exports.deleteItem = async (req, res) => {
+  const id = req.params.id;
+
+  await Product.deleteOne({ _id: id });
+
   res.redirect("/admin/products");
 };
