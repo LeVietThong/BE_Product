@@ -2,7 +2,7 @@ const Product = require("../../models/product.model");
 
 const systemConfig = require("../../config/system");
 
-const filterStatusHelper = require("../..//helpers/filterStatus");
+const filterStatusHelper = require("../../helpers/filterStatus");
 
 const searchHelper = require("../../helpers/search");
 
@@ -74,14 +74,14 @@ module.exports.changeMulti = async (req, res) => {
     case "active":
       await Product.updateMany({ _id: { $in: ids } }, { status: "active" });
       req.flash(
-        "sucess",
+        "success",
         `Cập nhật trạng thái thành công ${ids.length} sản phẩm!`
       );
       break;
     case "inactive":
       await Product.updateMany({ _id: { $in: ids } }, { status: "inactive" });
       req.flash(
-        "sucess",
+        "success",
         `Cập nhật trạng thái thành công ${ids.length} sản phẩm!`
       );
       break;
@@ -138,7 +138,6 @@ module.exports.create = async (req, res) => {
 
 //[POST] /admin/products/create
 module.exports.createPost = async (req, res) => {
-  console.log(req.file);
   req.body.price = parseInt(req.body.price);
   req.body.discountPercentage = parseInt(req.body.discountPercentage);
   req.body.stock = parseInt(req.body.stock);
@@ -150,7 +149,9 @@ module.exports.createPost = async (req, res) => {
     req.body.position = parseInt(req.body.position);
   }
 
-  req.body.thumbnail = `/uploads/${req.file.filename}`;
+  if (req.file) {
+    req.body.thumbnail = `/uploads/${req.file.filename}`;
+  }
 
   const product = new Product(req.body);
   await product.save();

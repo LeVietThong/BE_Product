@@ -39,7 +39,7 @@ if (formSearch) {
 
 //Pagination
 const btnPagination = document.querySelectorAll("[button-pagination]");
-if (btnPagination) {
+if (btnPagination.length > 0) {
   let url = new URL(window.location.href);
 
   btnPagination.forEach((button) => {
