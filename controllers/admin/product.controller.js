@@ -152,6 +152,7 @@ module.exports.create = async (req, res) => {
   const category = await ProductCategory.find(find);
 
   const newCategory = createTreeHelper.tree(category);
+
   res.render("admin/pages/products/create", {
     pageTitle: "Thêm mới sản phẩm",
     category: newCategory,
@@ -186,10 +187,17 @@ module.exports.edit = async (req, res) => {
   };
 
   const product = await Product.findOne(find);
+
+  const category = await ProductCategory.find({
+    delete: false,
+  });
+
+  const newCategory = createTreeHelper.tree(category);
   
   res.render("admin/pages/products/edit", {
     pageTitle: "Chỉnh sửa sản phẩm",
-    product: product
+    product: product,
+    category: newCategory,
   });
   } catch (error) {
     res.redirect(`${systemConfig.prefixAdmin}/products`);
