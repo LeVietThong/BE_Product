@@ -18,4 +18,20 @@ module.exports.createPost = (req, res, next) => {
   }
 
   next();
-}
+};
+
+module.exports.editPatch = (req, res, next) => {
+  if (!req.body.fullName) {
+    req.flash("error", `Vui lòng nhập họ tên!`);
+    res.redirect(`${systemConfig.prefixAdmin}/accounts/edit/${req.params.id}`);
+    return;
+  }
+
+  if (!req.body.email) {
+    req.flash("error", `Vui lòng nhập email!`);
+    res.redirect(`${systemConfig.prefixAdmin}/accounts/edit/${req.params.id}`);
+    return;
+  }
+
+  next();
+};
