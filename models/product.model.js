@@ -14,6 +14,7 @@ const productsSchema = new mongoose.Schema(
     price: Number,
     discountPercentage: Number,
     stock: Number,
+    thumbnail: String,
     status: String,
     position: Number,
     slug: {
@@ -21,7 +22,13 @@ const productsSchema = new mongoose.Schema(
       slug: "title",
       unique: true,
     },
-    thumbnail: String,
+    createdBy: {
+      account_id: String,
+      createdAt: {
+        type: Date,
+        default: Date.now
+      }
+    },
     delete: {
       type: Boolean,
       default: false,
