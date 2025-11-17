@@ -48,7 +48,7 @@ module.exports.index = async (req, res) => {
   //Sort
   let sort = {};
 
-  if(req.query.sortKey && req.query.sortValue) {
+  if (req.query.sortKey && req.query.sortValue) {
     sort[req.query.sortKey] = req.query.sortValue;
   } else {
     sort.position = "desc";
@@ -64,7 +64,7 @@ module.exports.index = async (req, res) => {
   for (const item of products) {
     const account = await Account.findOne({ _id: item.createdBy.account_id });
 
-    if(account) {
+    if (account) {
       item.accountFullName = account.fullName;
     }
   }
@@ -115,8 +115,16 @@ module.exports.changeMulti = async (req, res) => {
         { _id: { $in: ids } },
         {
           delete: true,
-          deleteAt: new Date(),
+          //deleteAt: new Date(),
+          deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date(),
+          },
         }
+      );
+      req.flash(
+        "success",
+        `Xoá thành công ${ids.length} sản phẩm!`
       );
       break;
     case "change-position":
@@ -147,9 +155,15 @@ module.exports.deleteItem = async (req, res) => {
     { _id: id },
     {
       delete: true,
-      deleteAt: new Date(),
+      //deleteAt: new Date(),
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      },
     }
   );
+
+  req.flash("success", "Xoá sản phẩm thành công!");
 
   res.redirect("/admin/products");
 };
@@ -196,23 +210,23 @@ module.exports.createPost = async (req, res) => {
 module.exports.edit = async (req, res) => {
   try {
     const find = {
-    delete: false,
-    _id: req.params.id
-  };
+      delete: false,
+      _id: req.params.id,
+    };
 
-  const product = await Product.findOne(find);
+    const product = await Product.findOne(find);
 
-  const category = await ProductCategory.find({
-    delete: false,
-  });
+    const category = await ProductCategory.find({
+      delete: false,
+    });
 
-  const newCategory = createTreeHelper.tree(category);
-  
-  res.render("admin/pages/products/edit", {
-    pageTitle: "Chỉnh sửa sản phẩm",
-    product: product,
-    category: newCategory,
-  });
+    const newCategory = createTreeHelper.tree(category);
+
+    res.render("admin/pages/products/edit", {
+      pageTitle: "Chỉnh sửa sản phẩm",
+      product: product,
+      category: newCategory,
+    });
   } catch (error) {
     res.redirect(`${systemConfig.prefixAdmin}/products`);
   }
@@ -230,10 +244,8 @@ module.exports.editPatch = async (req, res) => {
   }
 
   try {
-    await Product.updateOne({_id: req.params.id}, req.body);
-  } catch (error) {
-    
-  }
+    await Product.updateOne({ _id: req.params.id }, req.body);
+  } catch (error) {}
 
   res.redirect("back");
 };
@@ -242,16 +254,16 @@ module.exports.editPatch = async (req, res) => {
 module.exports.detail = async (req, res) => {
   try {
     const find = {
-    delete: false,
-    _id: req.params.id
-  };
+      delete: false,
+      _id: req.params.id,
+    };
 
-  const product = await Product.findOne(find);
-  
-  res.render("admin/pages/products/detail", {
-    pageTitle: product.title,
-    product: product
-  });
+    const product = await Product.findOne(find);
+
+    res.render("admin/pages/products/detail", {
+      pageTitle: product.title,
+      product: product,
+    });
   } catch (error) {
     res.redirect(`${systemConfig.prefixAdmin}/products`);
   }
