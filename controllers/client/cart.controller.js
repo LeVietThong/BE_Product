@@ -8,11 +8,7 @@ module.exports.addPost = async (req, res) => {
 
   const cart = await Cart.findOne({
     _id: cartId,
-  });
-
-  console.log(cartId);
-
-  console.log(cart);
+  });  
 
   const existProductInCart = cart.products.find(
     (item) => item.product_id == productId
