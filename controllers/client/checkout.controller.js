@@ -66,24 +66,46 @@ module.exports.order = async (req, res) => {
     products.push(objectProduct);
   }
 
-    const orderInfo = new Order({
-      cart_id: cartId,
-      userInfo: userInfo,
-      products: products,
-    });
+  const orderInfo = new Order({
+    cart_id: cartId,
+    userInfo: userInfo,
+    products: products,
+  });
 
-    const order = new Order(orderInfo);
-    order.save();
+  const order = new Order(orderInfo);
+  order.save();
 
-    await Cart.updateOne({ _id: cartId }, { $set: { products: [] } });
+  await Cart.updateOne({ _id: cartId }, { $set: { products: [] } });
 
-    res.redirect(`/checkout/success/${order.id}`);
+  res.redirect(`/checkout/success/${order.id}`);
 };
 
 // [GET] /checkout/success/:orderId
 module.exports.success = async (req, res) => {
-  console.log(req.params.orderId);
+  const order = await Order.findOne({
+    _id: req.params.orderId,
+  });
+
+  for (const product of order.products) {
+    const productInfo = await Product.findOne({
+      _id: product.product_id,
+    }).select("title thumbnail");
+    console.log(product.product_id),
+    console.log(productInfo);
+
+    product.productInfo = productInfo;
+    product.priceNew = productHelper.priceNewProduct(product);
+    product.totalPrice = product.priceNew * product.quantity;
+    console.log(product.productInfo);
+  }
+
+  order.totalPrice = order.products.reduce(
+    (sum, item) => sum + item.totalPrice,
+    0
+  );
+
   res.render("client/pages/checkout/success", {
     pageTitle: "Đặt hàng thành công",
+    order: order,
   });
 };
