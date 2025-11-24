@@ -3,6 +3,7 @@ const ForgotPassword = require("../../models/forgot-password.model");
 const md5 = require("md5");
 
 const generateHelper = require("../../helpers/generate");
+const sendEmailHelper = require("../../helpers/sendMail");
 
 //[GET] /user/register
 module.exports.register = (req, res) => {
@@ -99,7 +100,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
     return;
   }
   //Lưu email, OTP vào database
-  const otp = generateHelper.generateRandomNumber(8);
+  const otp = generateHelper.generateRandomNumber(6);
 
   const objectForgotPassword = {
     email: email,
@@ -111,5 +112,69 @@ module.exports.forgotPasswordPost = async (req, res) => {
   await forgotPassword.save();
 
   // Nếu tồn tại email thì gửi mã OTP qua email
-  res.send("OTP: " + otp);
+  const subject = "Mã OTP lấy lại mật khẩu.";
+  const html = `Mã OTP của bạn để lấy lại mật khẩu là <b>${otp}</b>`;
+
+  sendEmailHelper.sendMail(email, subject, html);
+  res.redirect(`/user/password/otp?email=${email}`);
+};
+
+//[GET] /user/password/otp
+module.exports.otpPassword = (req, res) => {
+  const email = req.query.email;
+
+  res.render("client/pages/user/otp-password", {
+    pageTitle: "Nhập mã OTP",
+    email: email,
+  });
+};
+
+//[POST] /user/password/otp
+module.exports.otpPasswordPost = async (req, res) => {
+  const email = req.body.email;
+  const otp = req.body.otp;
+
+  const result = await ForgotPassword.findOne({
+    email: email,
+    otp: otp,
+  });
+
+  if (!result) {
+    req.flash("error", "OTP không hợp lệ!");
+    res.redirect(`/user/password/otp?email=${email}`);
+    return;
+  }
+
+  const user = await User.findOne({
+    email: email,
+    delete: false,
+  });
+
+  res.cookie("tokenUser", user.tokenUser);
+  res.redirect("/user/password/reset");
+};
+
+//[GET] /user/password/reset
+module.exports.resetPassword = (req, res) => {
+  res.render("client/pages/user/reset-password", {
+    pageTitle: "Đổi mật khẩu",
+  });
+};
+
+//[POST] /user/password/reset
+module.exports.resetPasswordPost = async (req, res) => {
+  const password = req.body.password;
+  const tokenUser = req.cookies.tokenUser;
+
+  await User.updateOne(
+    {
+      tokenUser: tokenUser,
+      delete: false,
+    },
+    {
+      password: md5(password),
+    }
+  );
+
+  res.redirect("/");
 };
