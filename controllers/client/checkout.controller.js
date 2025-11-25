@@ -90,13 +90,10 @@ module.exports.success = async (req, res) => {
     const productInfo = await Product.findOne({
       _id: product.product_id,
     }).select("title thumbnail");
-    console.log(product.product_id),
-    console.log(productInfo);
 
     product.productInfo = productInfo;
     product.priceNew = productHelper.priceNewProduct(product);
     product.totalPrice = product.priceNew * product.quantity;
-    console.log(product.productInfo);
   }
 
   order.totalPrice = order.products.reduce(

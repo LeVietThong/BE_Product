@@ -160,7 +160,6 @@ if (uploadImage) {
   const uploadImagePreview = document.querySelector("[upload-image-preview]");
 
   uploadImageInput.addEventListener("change", () => {
-    console.log(e);
     const file = e.target.files[0];
     if (file) {
       uploadImagePreview.src = URL.createObjectURL(file);
