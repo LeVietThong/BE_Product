@@ -1,10 +1,11 @@
 import * as Popper from "https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm/index.js";
+import { FileUploadWithPreview } from "https://unpkg.com/file-upload-with-preview@6.1.2/dist/index.js";
 
 //CLIENT_SEND_MESSAGE
 const formSendMessage = document.querySelector(".chat .inner-form");
 if (formSendMessage) {
-  const upload = new FileUploadWithPreview.FileUploadWithPreview(
-    "upload-images",
+  const upload = new FileUploadWithPreview(
+    'upload-images',
     {
       multiple: true,
       maxFileCount: 6,
@@ -106,12 +107,12 @@ const showTyping = () => {
 
 //Insert Icon to input
 const emojiPicker = document.querySelector("emoji-picker");
+const inputChat = document.querySelector(
+      ".chat .inner-form input[name='content']"
+    );
 if (emojiPicker) {
   emojiPicker.addEventListener("emoji-click", (event) => {
     const icon = event.detail.unicode;
-    const inputChat = document.querySelector(
-      ".chat .inner-form input[name='content']"
-    );
     inputChat.value = inputChat.value + icon;
 
     const end = inputChat.value.length;
