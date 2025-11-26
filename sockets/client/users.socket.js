@@ -9,22 +9,28 @@ module.exports = (res) => {
       //Thêm id của A vào acceptFriends của B
       const existUser = await User.findOne({
         _id: userId,
-        acceptFriends: myUserId
+        acceptFriends: myUserId,
       });
 
       if (!existUser) {
-        await User.updateOne({ _id: userId }, { $push: { acceptFriends: myUserId } });
+        await User.updateOne(
+          { _id: userId },
+          { $push: { acceptFriends: myUserId } }
+        );
       }
 
       //Thêm id của B vào requestFriends của A
       const existUser2 = await User.findOne({
         _id: myUserId,
-        requestFriends: userId
+        requestFriends: userId,
       });
 
       if (!existUser2) {
-        await User.updateOne({ _id: myUserId }, { $push: { requestFriends: userId } });
-      }      
+        await User.updateOne(
+          { _id: myUserId },
+          { $push: { requestFriends: userId } }
+        );
+      }
     });
 
     //Chức năng hủy yêu cầu
@@ -34,22 +40,59 @@ module.exports = (res) => {
       //Xóa id của A vào acceptFriends của B
       const existUser = await User.findOne({
         _id: userId,
-        acceptFriends: myUserId
+        acceptFriends: myUserId,
       });
 
       if (existUser) {
-        await User.updateOne({ _id: userId }, { $pull: { acceptFriends: myUserId } });
+        await User.updateOne(
+          { _id: userId },
+          { $pull: { acceptFriends: myUserId } }
+        );
       }
 
       //Xóa id của B vào requestFriends của A
       const existUser2 = await User.findOne({
         _id: myUserId,
-        requestFriends: userId
+        requestFriends: userId,
       });
 
       if (existUser2) {
-        await User.updateOne({ _id: myUserId }, { $pull: { requestFriends: userId } });
-      }      
+        await User.updateOne(
+          { _id: myUserId },
+          { $pull: { requestFriends: userId } }
+        );
+      }
+    });
+
+    //Chức năng từ chối yêu cầu
+    socket.on("CLIENT_REFUSE_FRIEND", async (userId) => {
+      const myUserId = res.locals.user.id;
+
+      //Xóa id của A vào acceptFriends của B
+      const existUser = await User.findOne({
+        _id: myUserId,
+        acceptFriends: userId,
+      });
+
+      if (existUser) {
+        await User.updateOne(
+          { _id: myUserId },
+          { $pull: { acceptFriends: userId } }
+        );
+      }
+
+      //Xóa id của B vào requestFriends của A
+      const existUser2 = await User.findOne({
+        _id: userId,
+        requestFriends: myUserId,
+      });
+
+      if (existUser2) {
+        await User.updateOne(
+          { _id: userId },
+          { $pull: { requestFriends: myUserId } }
+        );
+      }
     });
   });
 };
