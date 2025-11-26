@@ -34,6 +34,7 @@ socket.on("SERVER_RETURN_MESSAGE", (data) => {
   const body = document.querySelector(".chat .inner-body");
   const boxTyping = document.querySelector(".chat .inner-list-typing");
   const div = document.createElement("div");
+
   let htmlFullName = "";
   let htmlContent = "";
   let htmlImages = "";
