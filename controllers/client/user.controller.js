@@ -70,7 +70,7 @@ module.exports.loginPost = async (req, res) => {
 
   const cart = Cart.findOne({ user_id: user.id });
 
-  if (cart){
+  if (cart) {
     res.cookie("cartId", cart.id);
   } else {
     await Cart.updateOne({ _id: req.cookies.cartId }, { user_id: user.id });
@@ -78,14 +78,32 @@ module.exports.loginPost = async (req, res) => {
 
   res.cookie("tokenUser", user.tokenUser);
 
+  await User.updateOne(
+    {
+      tokenUser: user.tokenUser,
+    },
+    {
+      statusOnline: "online",
+    }
+  );
+
   res.redirect("/");
 };
 
-//[GET] /user/login
-module.exports.logout = (req, res) => {
+//[GET] /user/logout
+module.exports.logout = async (req, res) => {
+  await User.updateOne(
+    {
+      tokenUser: req.cookies.tokenUser,
+    },
+    {
+      statusOnline: "offline",
+    }
+  );
+
   res.clearCookie("tokenUser");
   res.clearCookie("cartId");
-  res.redirect("/user/login");
+  res.redirect("/");
 };
 
 //[GET] /user/password/forgot

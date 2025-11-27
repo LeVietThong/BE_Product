@@ -47,9 +47,10 @@ module.exports = (res) => {
       const infoUserA = await User.findOne({
         _id: myUserId,
       }).select("id avatar fullName");
+
       socket.broadcast.emit("SERVER_RETURN_INFO_ACCEPT_FRIEND",{
         userId: userId,
-        infoUser: infoUserA
+        infoUserA: infoUserA
       });
     });
 

@@ -27,7 +27,7 @@ if (listBtnCancelFriend.length > 0) {
 }
 
 //Chức năng từ chối yêu cầu
-const refuseFriend = (button) => {
+const refuseFriend = (btnRefuse) => {
   btnRefuse.addEventListener("click", () => {
     btnRefuse.closest(".box-user").classList.add("refuse");
 
@@ -79,12 +79,12 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
     if (userId === data.userId) {
       const div = document.createElement("div");
       div.classList.add("col-6");
-      div.setAttribute("data-id", data.infoUserA._id);
+      div.setAttribute("user-id", data.infoUserA._id);
 
       div.innerHTML = `
         <div class="box-user">
           <div class="inner-avatar">
-            <img src="https://robohash.org/hicveldicta.png" alt="${data.infoUserA.fullName}">
+            <img src="/images/avatar.png" alt="${data.infoUserA.fullName}">
           </div>
           <div class="inner-info">
             <div class="inner-name">${data.infoUserA.fullName}</div>
@@ -103,14 +103,14 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
               </button>
               <button 
                 class="btn btn-sm btn-secondary mr-1" 
-                btn-deleted-friend="${data.infoUserA._id}"
+                btn-deleted-friend=""
                 disabled=""
               >
                 Đã xóa
               </button>
               <button 
                 class="btn btn-sm btn-primary mr-1" 
-                btn-accepted-friend="${data.infoUserA._id}"
+                btn-accepted-friend=""
                 disabled=""
               >
                 Đã chấp nhận
