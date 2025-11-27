@@ -135,7 +135,9 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
   if (dataUserNotFriend) {
     const userId = dataUserNotFriend.getAttribute("data-user-not-friend");
     if (userId === data.userId) {
-      const boxUser = dataUserNotFriend.querySelector(`[user-id='${data.infoUserA._id}']`);
+      const boxUser = dataUserNotFriend.querySelector(
+        `[user-id='${data.infoUserA._id}']`
+      );
       if (boxUser) {
         dataUserNotFriend.removeChild(boxUser);
       }
@@ -152,6 +154,18 @@ socket.on("SERVER_RETURN_USER_ID_CANCEL_FRIEND", (data) => {
 
     if (userIdB === data.userIdB) {
       dataUsersAccept.removeChild(boxUser);
+    }
+  }
+});
+
+//SERVER_RETURN_USER_ONLINE
+socket.on("SERVER_RETURN_USER_STATUS_ONLINE", (data) => {
+  const dataUsersFriend = document.querySelector(`[data-users-friend"]`);
+  if (dataUsersFriend) {
+    const boxUser = dataUsersFriend.querySelector(`[user-id='${data.userId}']`);
+    if(boxUser) {
+      const boxStatus = boxUser.querySelector("[status]");
+      boxStatus.setAttribute("status", data.status);
     }
   }
 });
