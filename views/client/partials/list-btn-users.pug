@@ -15,4 +15,9 @@
     a(
       class="btn btn-primary m-1"
       href="/users/accept"
-    ) Lời mời kết bạn
+    )  
+      | Lời mời kết bạn
+      span(
+        class="badge badge-light"
+        badge-users-accept=user.id
+      ) #{user.acceptFriends.length}

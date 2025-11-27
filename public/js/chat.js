@@ -4,13 +4,10 @@ import { FileUploadWithPreview } from "https://unpkg.com/file-upload-with-previe
 //CLIENT_SEND_MESSAGE
 const formSendMessage = document.querySelector(".chat .inner-form");
 if (formSendMessage) {
-  const upload = new FileUploadWithPreview(
-    'upload-images',
-    {
-      multiple: true,
-      maxFileCount: 6,
-    }
-  );
+  const upload = new FileUploadWithPreview("upload-images", {
+    multiple: true,
+    maxFileCount: 6,
+  });
   formSendMessage.addEventListener("submit", (e) => {
     e.preventDefault();
     const content = e.target.elements.content.value;
@@ -108,8 +105,8 @@ const showTyping = () => {
 //Insert Icon to input
 const emojiPicker = document.querySelector("emoji-picker");
 const inputChat = document.querySelector(
-      ".chat .inner-form input[name='content']"
-    );
+  ".chat .inner-form input[name='content']"
+);
 if (emojiPicker) {
   emojiPicker.addEventListener("emoji-click", (event) => {
     const icon = event.detail.unicode;

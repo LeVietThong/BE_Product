@@ -31,6 +31,17 @@ module.exports = (res) => {
           { $push: { requestFriends: userId } }
         );
       }
+
+      //Lấy ra độ dài acceptFriends của B và trả về client
+      const infoUserB = await User.findOne({
+        _id: userId,
+      });
+      const lengthAcceptFriends = infoUserB.acceptFriends.length;
+
+      socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", {
+        userId: userId,
+        lengthAcceptFriends: lengthAcceptFriends,
+      });
     });
 
     //Chức năng hủy yêu cầu
@@ -62,6 +73,8 @@ module.exports = (res) => {
           { $pull: { requestFriends: userId } }
         );
       }
+
+      
     });
 
     //Chức năng từ chối yêu cầu
@@ -126,7 +139,8 @@ module.exports = (res) => {
           { _id: userId },
           {
             $push: { friendsList: { user_id: myUserId, room_chat_id: "" } },
-            $pull: { requestFriends: myUserId } }
+            $pull: { requestFriends: myUserId },
+          }
         );
       }
     });
