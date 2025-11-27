@@ -38,7 +38,7 @@ module.exports = (res) => {
       });
       const lengthAcceptFriends = infoUserB.acceptFriends.length;
 
-      socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", {
+      socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIEND", {
         userId: userId,
         lengthAcceptFriends: lengthAcceptFriends,
       });
@@ -89,9 +89,15 @@ module.exports = (res) => {
       });
       const lengthAcceptFriends = infoUserB.acceptFriends.length;
 
-      socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", {
+      socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIEND", {
         userId: userId,
         lengthAcceptFriends: lengthAcceptFriends,
+      });
+
+      //Lấy id của A và trả về cho B
+      socket.broadcast.emit("SERVER_RETURN_USER_ID_CANCEL_FRIEND", {
+        userIdB: userId,
+        userIdA: myUserId,
       });
     });
 

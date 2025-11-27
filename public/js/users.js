@@ -45,13 +45,13 @@ if (listBtnRefuseFriend.length > 0) {
 //Chức năng chấp nhận yêu cầu
 const acceptFriend = (button) => {
   button.addEventListener("click", () => {
-      button.closest(".box-user").classList.add("accepted");
+    button.closest(".box-user").classList.add("accepted");
 
-      const userId = button.getAttribute("btn-accept-friend");
+    const userId = button.getAttribute("btn-accept-friend");
 
-      socket.emit("CLIENT_ACCEPT_FRIEND", userId);
+    socket.emit("CLIENT_ACCEPT_FRIEND", userId);
   });
-}
+};
 const listBtnAcceptFriend = document.querySelectorAll("[btn-accept-friend]");
 if (listBtnAcceptFriend.length > 0) {
   listBtnAcceptFriend.forEach((button) => {
@@ -78,6 +78,7 @@ if (dataUsersAccept) {
     if (userId === data.userId) {
       const div = document.createElement("div");
       div.classList.add("col-6");
+      div.setAttribute("data-id", data.infoUserA._id);
 
       div.innerHTML = `
         <div class="box-user">
@@ -101,7 +102,7 @@ if (dataUsersAccept) {
               </button>
               <button 
                 class="btn btn-sm btn-secondary mr-1" 
-                btn-deleted-friend="${data.infoA._id}"
+                btn-deleted-friend="${data.infoUserA._id}"
                 disabled=""
               >
                 Đã xóa
@@ -128,3 +129,16 @@ if (dataUsersAccept) {
     }
   });
 }
+
+//SERVER_RETURN_USER_ID_CANCEL_FRIEND
+socket.on("SERVER_RETURN_USER_ID_CANCEL_FRIEND", (data) => {
+  const boxUser = document.querySelector(`[user-id='${data.userIdA}']`);
+  if (boxUser) {
+    const dataUsersAccept = document.querySelector("[data-users-accept]");
+    const userIdB = badgeUserAccept.getAttribute("data-users-accept");
+
+    if (userIdB === data.userIdB) {
+      dataUsersAccept.removeChild(boxUser);
+    }
+  }
+});
