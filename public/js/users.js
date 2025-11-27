@@ -71,10 +71,11 @@ if (badgeUserAccept) {
 }
 
 //SERVER_RETURN_INFO_ACCEPT_FRIEND
-const dataUsersAccept = document.querySelector("[data-users-accept]");
-if (dataUsersAccept) {
-  const userId = dataUsersAccept.getAttribute("data-users-accept");
-  socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
+socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
+  //Trang lời mời đã nhận
+  const dataUsersAccept = document.querySelector("[data-users-accept]");
+  if (dataUsersAccept) {
+    const userId = dataUsersAccept.getAttribute("data-users-accept");
     if (userId === data.userId) {
       const div = document.createElement("div");
       div.classList.add("col-6");
@@ -127,8 +128,20 @@ if (dataUsersAccept) {
       refuseFriend(btnRefuse);
       acceptFriend(btnAccept);
     }
-  });
-}
+  }
+
+  //Trang danh sách người dùng
+  const dataUserNotFriend = document.querySelector("[data-user-not-friend]");
+  if (dataUserNotFriend) {
+    const userId = dataUserNotFriend.getAttribute("data-user-not-friend");
+    if (userId === data.userId) {
+      const boxUser = dataUserNotFriend.querySelector(`[user-id='${data.infoUserA._id}']`);
+      if (boxUser) {
+        dataUserNotFriend.removeChild(boxUser);
+      }
+    }
+  }
+});
 
 //SERVER_RETURN_USER_ID_CANCEL_FRIEND
 socket.on("SERVER_RETURN_USER_ID_CANCEL_FRIEND", (data) => {
