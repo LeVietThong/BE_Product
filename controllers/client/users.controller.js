@@ -13,12 +13,15 @@ module.exports.notFriend = async (req, res) => {
 
   const requestFriends = myUser.requestFriends;
   const acceptFriends = myUser.acceptFriends;
+  const friendsList = myUser.friendsList;
+  const friendsListId = friendsList.map((item) => item.user_id);
 
   const users = await User.find({
     $and: [
       { _id: { $ne: userId } },
       { _id: { $nin: requestFriends } },
       { _id: { $nin: acceptFriends } },
+      { _id: { $nin: friendsListId } },
     ],
     status: "active",
     delete: false,
@@ -45,7 +48,7 @@ module.exports.request = async (req, res) => {
   const users = await User.find({
     _id: { $in: requestFriends },
     status: "active",
-    delete: false,  
+    delete: false,
   }).select("id avatar fullName");
 
   res.render("client/pages/users/request", {
@@ -69,7 +72,7 @@ module.exports.accept = async (req, res) => {
   const users = await User.find({
     _id: { $in: acceptFriends },
     status: "active",
-    delete: false,  
+    delete: false,
   }).select("id avatar fullName");
 
   res.render("client/pages/users/accept", {
@@ -89,16 +92,16 @@ module.exports.friends = async (req, res) => {
   });
 
   const friendsList = myUser.friendsList;
-  const friendsListId = friendsList.map(item => item.user_id);
+  const friendsListId = friendsList.map((item) => item.user_id);
 
   const users = await User.find({
     _id: { $in: friendsListId },
     status: "active",
-    delete: false,  
+    delete: false,
   }).select("id avatar fullName statusOnline");
 
   for (const user of users) {
-    const infoFriend = friendsList.find(friend => friend.user_id == user.id);
+    const infoFriend = friendsList.find((friend) => friend.user_id == user.id);
     user.infoFriend = infoFriend;
   }
 
@@ -107,4 +110,3 @@ module.exports.friends = async (req, res) => {
     users: users,
   });
 };
-
